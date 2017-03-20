@@ -61,6 +61,7 @@ namespace StefanPeevBlog.Controllers
                 : message == ManageMessageId.Error ? "An error has occurred."
                 : message == ManageMessageId.AddPhoneSuccess ? "Your phone number was added."
                 : message == ManageMessageId.RemovePhoneSuccess ? "Your phone number was removed."
+                : message == ManageMessageId.AccountSettingsChanged ? "Your account settings has been changed."
                 : "";
 
             var userId = User.Identity.GetUserId();
@@ -74,6 +75,26 @@ namespace StefanPeevBlog.Controllers
             };
             return View(model);
         }
+
+        ////
+        //// POST: /Manage/Index
+        //public async Task<ActionResult> Index([Bind(Include ="Username")] string Username)
+        //{
+        //    StefanPeevBlog.Models.ApplicationDbContext db = new ApplicationDbContext();
+        //    var user = UserManager.FindById(User.Identity.GetUserId()) ;
+        //    user.UserName = Username;
+        //    db.SaveChanges();
+        //    var userId = User.Identity.GetUserId();
+        //    var model = new ApplicationUser
+        //    {
+        //        HasPassword = HasPassword(),
+        //        PhoneNumber = await UserManager.GetPhoneNumberAsync(userId),
+        //        TwoFactor = await UserManager.GetTwoFactorEnabledAsync(userId),
+        //        Logins = await UserManager.GetLoginsAsync(userId),
+        //        BrowserRemembered = await AuthenticationManager.TwoFactorBrowserRememberedAsync(userId)
+        //    };
+        //    return View(model);
+        //} 
 
         //
         // POST: /Manage/RemoveLogin
@@ -381,7 +402,8 @@ namespace StefanPeevBlog.Controllers
             SetPasswordSuccess,
             RemoveLoginSuccess,
             RemovePhoneSuccess,
-            Error
+            Error,
+            AccountSettingsChanged
         }
 
 #endregion

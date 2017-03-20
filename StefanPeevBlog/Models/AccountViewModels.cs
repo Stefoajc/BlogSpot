@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using StefanPeevBlog.CustomValidationAttributes;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Web;
+using System.Web.Mvc;
 
 namespace StefanPeevBlog.Models
 {
@@ -48,10 +51,11 @@ namespace StefanPeevBlog.Models
 
     public class LoginViewModel
     {
+
+
         [Required]
-        [Display(Name = "Email")]
-        [EmailAddress]
-        public string Email { get; set; }
+        [Display(Name = "Username")]
+        public string Username { get; set; }
 
         [Required]
         [DataType(DataType.Password)]
@@ -67,17 +71,23 @@ namespace StefanPeevBlog.Models
         [Required]
         [EmailAddress]
         [Display(Name = "Email")]
+        [Remote("doesEmailExist", "Account", HttpMethod = "POST", ErrorMessage = "Email already used. Please enter a different email.")]
         public string Email { get; set; }
 
         [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
+        [Display(Name = "Username")]
+        [Remote("doesUserNameExist", "Account", HttpMethod = "POST", ErrorMessage = "User name already exists. Please enter a different user name.")]
+        public string Username { get; set; }
+
+        [Required]
+        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 1)]
         [DataType(DataType.Password)]
         [Display(Name = "Password")]
         public string Password { get; set; }
 
         [DataType(DataType.Password)]
         [Display(Name = "Confirm password")]
-        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+        [System.ComponentModel.DataAnnotations.Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
     }
 
@@ -89,14 +99,14 @@ namespace StefanPeevBlog.Models
         public string Email { get; set; }
 
         [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
+        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 1)]
         [DataType(DataType.Password)]
         [Display(Name = "Password")]
         public string Password { get; set; }
 
         [DataType(DataType.Password)]
         [Display(Name = "Confirm password")]
-        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+        [System.ComponentModel.DataAnnotations.Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
 
         public string Code { get; set; }
@@ -108,5 +118,36 @@ namespace StefanPeevBlog.Models
         [EmailAddress]
         [Display(Name = "Email")]
         public string Email { get; set; }
+    }
+
+    public class AccountSettingsViewModel
+    {
+        [Key]
+        public string Id { get; set; }
+
+        [Required]
+        [Display(Name = "UserName")]
+        public string UserName { get; set; }
+
+        [Required]
+        [Display(Name = "Fullname")]
+        [RegularExpression(@"^[a-zA-Zа-яА-Я' ']{1,30}$", ErrorMessage = "Your Full Name should contain only letters and spaces \n Вашето име трябва да е съставено само от букви и празни разстояния.")]
+        public string FullName { get; set; }
+
+        public string ImagePath { get; set; }
+
+    }
+
+    public class FileViewModel
+    {
+        [ValidateFile(ErrorMessage = "Please select a PNG image smaller than 1MB")]
+        public HttpPostedFileBase File { get; set; }
+    }
+
+    public class AccountPopUpBriefInfoViewModel
+    {
+        public string ImagePath { get; set; }
+        public string FullName { get; set; }
+        public string Info { get; set; }
     }
 }

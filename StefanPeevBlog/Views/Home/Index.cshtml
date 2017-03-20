@@ -1,31 +1,191 @@
 ﻿@{
-    ViewBag.Title = "Home Page";
+    ViewBag.Title = "Home";
 }
 
-<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="http://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
-</div>
+@using StefanPeevBlog.Models
+
+@model List<StefanPeevBlog.Models.Post>
+
+
+
 
 <div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
+    <!-- Blog Entries Column -->
+    <div class="col-md-8">
+        <h1 class="page-header">
+            Latest Posts
+        </h1>
+        <!-- Latest Blog Post's -->
+        @foreach (var post in Model)
+        {
+            <h2>
+                <a href=@Url.Action("../Posts/Details/" + post.Id)>@post.Title</a>
+            </h2>
+            <p class="lead">
+                @{
+                    string name;
+                    if (post.Author == null)
+                    {
+                        name = "Anonymous";
+                    }
+                    else
+                    {
+                        name = post.Author.UserName;
+                    }
+                }
+                Posted by
+                <a href="../Posts/UserPosts/@name" id="@post.AuthorId" class="">
+                    @name
+                    @* --------------------------------------------------------------- *@
+                    @* ToolTipView *@
+                    @* --------------------------------------------------------------- *@
+                    @* --------------------------------------------------------------- *@
+                    @* ToolTipView END *@
+                    @* --------------------------------------------------------------- *@
+                </a>
+            </p>
+            <p><span class="glyphicon glyphicon-time"></span> Posted on @post.Date</p>
+            <hr>
+                    var image = post.ImagePath != null ? Url.Content(post.ImagePath) : null /*Url.Content("~/ImagesPostUploaded/NoImagePost.png")*/;
+                    if (image != null)
+                    {
+                        <img class="img-responsive" src="@image" alt="">
+                        <hr>
+                    }
+                    <p class="post-body">@post.Body</p>
+                    <a class="btn btn-primary" href=@Url.Action("../Posts/Details/" + post.Id)>Read More <span class="glyphicon glyphicon-chevron-right"></span></a>
+                    <hr>
+                    }
+        <!-- Pager -->
+        <ul class="pager">
+            <li class="previous">
+                <a href="#">&larr; Older</a>
+            </li>
+            <li class="next">
+                <a href="#">Newer &rarr;</a>
+            </li>
+        </ul>
+
+        <h1 class="page-header">
+            Most Popular Posts
+        </h1>
+        <!-- Most Popular Blog Post's -->
+        @foreach (var post in ViewBag.MostPopular)
+        {
+            <h2>
+                <a href=@Url.Action("../Posts/Details/" + post.Id)>@post.Title</a>
+            </h2>
+            <p class="lead">
+                @{
+                    string name;
+                    if (post.Author == null)
+                    {
+                        name = "Anonymous";
+                    }
+                    else
+                    {
+                        name = post.Author.UserName;
+                    }
+                }
+                Posted by <a href="../Posts/UserPosts/@name">@name</a>
+            </p>
+            <p><span class="glyphicon glyphicon-time"></span> Posted on @post.Date</p>
+            <hr />
+
+                    var image = post.ImagePath != null ? Url.Content(post.ImagePath) : Url.Content("~/ImagesPostUploaded/NoImagePost.png");
+
+                    <img class="img-responsive" src="@image" alt="">
+                    <hr>
+                    <p class="post-body">@post.Body</p>
+                    <h2>@post.TimesVisited</h2>
+                    <a class="btn btn-primary" href=@Url.Action("../Posts/Details/" + post.Id)>Read More <span class="glyphicon glyphicon-chevron-right"></span></a>
+                    <hr>
+                    }
+        <!-- Pager -->
+        <ul class="pager">
+            <li class="previous">
+                <a href="#">&larr; Older</a>
+            </li>
+            <li class="next">
+                <a href="#">Newer &rarr;</a>
+            </li>
+        </ul>
+
     </div>
+    <!-- Blog Sidebar Widgets Column -->
     <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
+        <!-- Blog Search Well -->
+        <div class="well">
+            <h4>Blog Search</h4>
+            <div class="input-group">
+                <input type="text" class="form-control">
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="button">
+                        <span class="glyphicon glyphicon-search"></span>
+                    </button>
+                </span>
+            </div>
+            <!-- /.input-group -->
+        </div>
+        <!-- Blog Categories Well -->
+        <div class="well">
+            <h4>Blog Categories</h4>
+            <div class="row">
+                <div class="col-lg-6">
+                    <ul class="list-unstyled">
+                        <li>
+                            <a href="#">Category Name</a>
+                        </li>
+                        <li>
+                            <a href="#">Category Name</a>
+                        </li>
+                        <li>
+                            <a href="#">Category Name</a>
+                        </li>
+                        <li>
+                            <a href="#">Category Name</a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.col-lg-6 -->
+                <div class="col-lg-6">
+                    <ul class="list-unstyled">
+                        <li>
+                            <a href="#">Category Name</a>
+                        </li>
+                        <li>
+                            <a href="#">Category Name</a>
+                        </li>
+                        <li>
+                            <a href="#">Category Name</a>
+                        </li>
+                        <li>
+                            <a href="#">Category Name</a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.col-lg-6 -->
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- Side Widget Well -->
+        <div class="well">
+            <h4>Side Widget Well</h4>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore, perspiciatis adipisci accusamus laudantium odit aliquam repellat tempore quos aspernatur vero.</p>
+        </div>
     </div>
 </div>
+<!-- /.row -->
+<hr>
+
+
+<!-- Footer -->
+<footer>
+    <div class="row">
+        <div class="col-lg-12">
+            <p>Copyright &copy; Your Website 2014</p>
+        </div>
+        <!-- /.col-lg-12 -->
+    </div>
+    <!-- /.row -->
+</footer>

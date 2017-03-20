@@ -1,0 +1,86 @@
+﻿@model IEnumerable<StefanPeevBlog.Models.PostIndexViewModel>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table row">
+    <tr>
+        <th class="col-md-1">
+            @Html.DisplayNameFor(model => model.Title)
+        </th>
+        <th class="col-md-7">
+            @Html.DisplayNameFor(model => model.Body)
+        </th>
+        <th class="col-md-1">
+            Viewed
+        </th>
+        <th class="col-md-1">
+            @Html.DisplayNameFor(model => model.Date)
+        </th>
+        <th class="col-md-2"></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Body)
+            </td>
+            <td style="text-align:center">
+                @Html.DisplayFor(modelItem => item.TimesVisited)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Date)
+            </td>
+            <td>
+                @Html.ActionLink("Details", "Details", new { id = item.Id })
+                @if (User.IsInRole("Administrators") || User.Identity.Name == item.UserName)
+                {
+                    @:|
+                    @Html.ActionLink("Edit", "Edit", new { id = item.Id });
+                    @:|
+                    @Html.ActionLink("Delete", "Delete", new { id = item.Id });
+                }
+            </td>
+        </tr>
+    }
+</table>
+@if (ViewBag.TotalViews != null)
+{
+    <div style="text-align:right;">Total Views: @ViewBag.TotalViews</div>
+}
+
+
+@*<div class="row">
+    <div class="col-md-12">
+        <div class="row">
+            <h2 class="col-md-12">Most Recent</h2>
+            @foreach (var post in Model)
+            {
+                <div class="post col-md-5" style="margin-left:5px;">
+                    <h2 class="title">@post.Title</h2>
+                    <div class="post-about">
+                        Posted on <i>@post.Date</i>
+                        @if (post.Author != null)
+                        {
+                            @:by <i>@post.Author.FullName (@post.Author.UserName)</i>
+                    }
+                    </div>
+                    <div class="post-body">
+                        @Html.Raw(post.Body)
+                    </div>
+                    @Html.ActionLink("Read More", "Detail", new { id = post.Id }, new { @class = "post-details" })
+                </div>
+            }
+        </div>
+    </div>
+</div>*@

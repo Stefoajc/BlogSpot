@@ -9,12 +9,18 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using StefanPeevBlog.Models;
+using System.Data.Entity;
+using Microsoft.AspNet.Identity.EntityFramework;
+using static StefanPeevBlog.Controllers.ManageController;
+using System.Web.Security;
+using System.IO;
 
 namespace StefanPeevBlog.Controllers
 {
     [Authorize]
     public class AccountController : Controller
     {
+        private ApplicationDbContext db = new ApplicationDbContext();
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
 
@@ -22,7 +28,7 @@ namespace StefanPeevBlog.Controllers
         {
         }
 
-        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
+        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
         {
             UserManager = userManager;
             SignInManager = signInManager;
@@ -34,9 +40,9 @@ namespace StefanPeevBlog.Controllers
             {
                 return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
             }
-            private set 
-            { 
-                _signInManager = value; 
+            private set
+            {
+                _signInManager = value;
             }
         }
 
@@ -57,6 +63,7 @@ namespace StefanPeevBlog.Controllers
         [AllowAnonymous]
         public ActionResult Login(string returnUrl)
         {
+            Session["dummy"] = "dummy";
             ViewBag.ReturnUrl = returnUrl;
             return View();
         }
@@ -75,7 +82,7 @@ namespace StefanPeevBlog.Controllers
 
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, change to shouldLockout: true
-            var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
+            var result = await SignInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberMe, shouldLockout: false);
             switch (result)
             {
                 case SignInStatus.Success:
@@ -120,7 +127,7 @@ namespace StefanPeevBlog.Controllers
             // If a user enters incorrect codes for a specified amount of time then the user account 
             // will be locked out for a specified amount of time. 
             // You can configure the account lockout settings in IdentityConfig
-            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent:  model.RememberMe, rememberBrowser: model.RememberBrowser);
+            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent: model.RememberMe, rememberBrowser: model.RememberBrowser);
             switch (result)
             {
                 case SignInStatus.Success:
@@ -151,12 +158,12 @@ namespace StefanPeevBlog.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser { UserName = model.Username, Email = model.Email };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
-                    
+                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+
                     // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
                     // Send an email with this link
                     // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
@@ -402,6 +409,116 @@ namespace StefanPeevBlog.Controllers
         {
             return View();
         }
+
+        //
+        // GET: /Account/Settings
+        [HttpGet]
+        [Authorize]
+        public ActionResult Settings()
+        {
+
+            var user = UserManager.FindById(User.Identity.GetUserId());
+            AccountSettingsViewModel ASVM = new AccountSettingsViewModel() { FullName = user.FullName, Id = user.Id, ImagePath = user.ImagePath, UserName = user.UserName };
+
+            return View(ASVM);
+        }
+
+        //
+        // POST: /Account/Settings/AccountSettingsViewModel
+        [HttpPost]
+        [Authorize]
+        public async Task<ActionResult> Settings([Bind(Include = "Id,Username,FullName,ImagePath")] AccountSettingsViewModel settings)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(settings);
+            }
+            var user = UserManager.FindById(User.Identity.GetUserId());
+            user.FullName = settings.FullName;
+            user.UserName = settings.UserName;
+
+            var result = await UserManager.UpdateAsync(user);
+            //var store = new UserStore<ApplicationUser>(new ApplicationDbContext());
+            //var mngr = new UserManager<ApplicationUser>(store);
+            //var result = await mngr.UpdateAsync(user);
+            db.SaveChanges();
+            if (result.Succeeded)
+            {
+                user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
+                if (user != null)
+                {
+                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                }
+                return RedirectToAction("Index", "Manage", new { Message = ManageMessageId.AccountSettingsChanged });
+            }
+            AddErrors(result);
+            return View(settings);
+        }
+
+
+        [HttpPost]
+        [AllowAnonymous]
+        public JsonResult doesUserNameExist(string Username)
+        {
+            return Json(!db.Users.Any(u => u.UserName == Username));
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public JsonResult doesEmailExist(string Email)
+        {
+            return Json(!db.Users.Any(u => u.Email == Email));
+        }
+
+        public ActionResult UploadImage()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> UploadImage(FileViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            // The uploaded image corresponds to our business rules => process it
+
+            var fileName = Path.GetFileName(model.File.FileName);
+            var path = Path.Combine(Server.MapPath("~/ImagesUploaded"), fileName);
+            model.File.SaveAs(path);
+            var dbpath = Path.Combine("/ImagesUploaded", fileName);
+            var user = UserManager.FindById(User.Identity.GetUserId());
+            user.ImagePath = dbpath;
+
+            var result = await UserManager.UpdateAsync(user);
+            db.SaveChanges();
+            if (result.Succeeded)
+            {
+                user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
+                if (user != null)
+                {
+                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                }
+                return RedirectToAction("Index", "Manage", new { Message = ManageMessageId.AccountSettingsChanged });
+            }
+            AddErrors(result);
+            return View("Settings");
+        }
+
+        public ActionResult GetUserInfoPopUp(string id)
+        {
+            return View(db.Users.Where(u => u.Id == id)
+                .Select(u => new AccountPopUpBriefInfoViewModel { FullName = u.FullName, ImagePath = u.ImagePath, Info = u.Info })
+                .FirstOrDefault());
+        }
+
+        //[OutputCache(NoStore = true, Duration = 0, VaryByParam = "*")]
+        //public ActionResult ViewSavedImage()
+        //{
+        //    return PartialView("ViewSavedImage", imageModel);
+        //}
 
         protected override void Dispose(bool disposing)
         {

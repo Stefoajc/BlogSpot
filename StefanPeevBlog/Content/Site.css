@@ -22,3 +22,102 @@ select,
 textarea {
     max-width: 280px;
 }
+
+.post > h2, .post > div {
+    padding: 10px;
+    margin: 0px;
+}
+
+.post > h2 {
+    margin-top: 15px;
+}
+
+.post {
+    background: #EEE;
+    border-radius: 10px;
+}
+
+.left-sidebar {
+    /*float: right;
+    width: 10%;*/
+    border-color:black;
+    border:solid;
+    border-width:2px;
+    background-color:blanchedalmond;
+
+}
+
+.post-body {
+    height:60px;
+    overflow: hidden;
+}
+
+.post-details{
+    margin-left:10px;
+}
+
+body {
+    padding-top: 70px; /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
+}
+
+footer {
+    margin: 50px 0;
+}
+
+.post-body-create
+{
+    overflow:auto;
+    max-width:80%;
+}
+
+.form-group img
+{
+    width:100%;
+    height:100%;
+    max-height:400px;
+    max-width:900px;
+}
+
+
+/*------------------------------------------------------------------------------*/
+                                /*Tooltip Style*/
+/*------------------------------------------------------------------------------*/
+
+.tooltipp {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+}
+
+.tooltipp .tooltiptextt {
+    visibility: hidden;
+    width: 120px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -60px;
+    opacity: 0;
+    transition: opacity 1s;
+}
+
+.tooltipp .tooltiptextt::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+}
+
+.tooltipp:hover .tooltiptextt {
+    visibility: visible;
+    opacity: 1;
+}

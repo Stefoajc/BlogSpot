@@ -1,0 +1,46 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Unauthorized</title>
+    @Styles.Render("~/Content/css")
+</head>
+<body>
+    <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-6">
+            <div>
+                <span class="glyphicon glyphicon-lock" style="font-size:100px; padding-left:150px"></span>
+            </div>
+            <div id="content">
+                <div class="content-container">
+                    <h3>HTTP Error 404.0 - Not Authorized</h3>
+                    <h4>You are not authorized for the resource you are looking for.</h4>
+                </div>
+                <div class="content-container">
+                    <fieldset>
+                        <h4>Most likely causes:</h4>
+                        <ul> 	<li>You don't have rights over the looking content.</li>  <li>You are not owner of the content.</li>  	<li>An authorization filter or module, restricts access to the file.</li> </ul>
+                    </fieldset>
+                </div>
+
+                <div class="content-container">
+                    <fieldset>
+                        <h4>More Information:</h4>
+                        This error means that the file or directory needs specific authorization.<br/>
+                        You should be Administrator or Owner to have access.
+                    </fieldset>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2"></div>
+    </div>
+
+</body>
+</html>

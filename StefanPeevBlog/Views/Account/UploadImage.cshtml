@@ -1,0 +1,39 @@
+﻿
+@{
+    ViewBag.Title = "UploadImage";
+}
+
+@model StefanPeevBlog.Models.FileViewModel
+<h2>Upload Profile Image</h2>
+<br />
+<div class="col-md-12">
+    @using (Html.BeginForm("UploadImage", "Account", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            <div class="">
+
+                @*-----------------------------------------------------*@
+
+
+
+                <div class="col-md-12">
+                    <img id="imgContainer" class="img-responsive" src="@Url.Content("~/ImagesUploaded/NoImage.png")" alt="" style="max-height:300px;max-width:300px">
+                    <br />
+                    <input type="file" name="@Html.NameFor(x => x.File)" id="@Html.IdFor(x => x.File)" />
+                    @Html.ValidationMessageFor(x => x.File, "", new { @class = "text-danger" })
+                    <input type="submit" value="upload" />
+                </div>
+                
+
+
+                @*-----------------------------------------------------*@
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval", "~/bundles/imagepreview")
+}
