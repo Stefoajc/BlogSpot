@@ -169,10 +169,13 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BaseDbContextController.cs" />
+    <Compile Include="Controllers\CategoryPostsController.cs" />
+    <Compile Include="Controllers\CommentsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\PostsController.cs" />
     <Compile Include="CustomValidationAttributes\AdminAuthorizationAttributeWithCustomView.cs" />
+    <Compile Include="CustomValidationAttributes\ValidateFileAcceptNullAttribute.cs" />
     <Compile Include="CustomValidationAttributes\ValidateFileAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -181,6 +184,9 @@
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
     <Compile Include="Models\ApplicationUser.cs" />
+    <Compile Include="Models\CategoryPosts.cs" />
+    <Compile Include="Models\Comments.cs" />
+    <Compile Include="Models\CommentsTreeViewModel.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Post.cs" />
     <Compile Include="Models\PostViewModels.cs" />
@@ -188,6 +194,7 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\AddDeleteEditComment.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\themes\base\accordion.css" />
@@ -239,9 +246,12 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\ClassRemovalOnPrevElement.js" />
+    <Content Include="Scripts\ClickOnTagToShow.js" />
     <Content Include="Scripts\DatePickerReady.js" />
     <None Include="Scripts\jquery-3.1.1.intellisense.js" />
+    <Content Include="Scripts\DeleteGlyphAjaxDeleteAction.js" />
     <Content Include="Scripts\drag-and-dropping.js" />
+    <Content Include="Scripts\EditGlyphAjaxEditAction.js" />
     <Content Include="Scripts\GetUserBriefInfoPopUp.js" />
     <Content Include="Scripts\ImagePreview.js" />
     <Content Include="Scripts\jquery-3.1.1.js" />
@@ -306,6 +316,21 @@
     <Content Include="Views\Account\Settings.cshtml" />
     <Content Include="Views\Account\UploadImage.cshtml" />
     <Content Include="Views\Account\GetUserInfoPopUp.cshtml" />
+    <Content Include="Views\Account\Info.cshtml" />
+    <Content Include="Views\CategoryPosts\Create.cshtml" />
+    <Content Include="Views\CategoryPosts\Delete.cshtml" />
+    <Content Include="Views\CategoryPosts\Details.cshtml" />
+    <Content Include="Views\CategoryPosts\Edit.cshtml" />
+    <Content Include="Views\CategoryPosts\Index.cshtml" />
+    <Content Include="Views\Posts\CategoryAllPosts.cshtml" />
+    <Content Include="Views\Comments\Create.cshtml" />
+    <Content Include="Views\Comments\Delete.cshtml" />
+    <Content Include="Views\Comments\Details.cshtml" />
+    <Content Include="Views\Comments\Edit.cshtml" />
+    <Content Include="Views\Comments\Index.cshtml" />
+    <Content Include="Views\Posts\Comments.cshtml" />
+    <Content Include="Views\Comments\CreatePartial.cshtml" />
+    <Content Include="Views\Comments\EditPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -10,11 +10,20 @@ namespace StefanPeevBlog.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
-        public ActionResult Index()
+        public ActionResult Index(string searchString)
         {
             var posts = db.Posts.Include(p => p.Author).OrderByDescending(p => p.Date).Take(3);
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                posts = posts.Where(p => p.Title.Contains(searchString) || p.Body.Contains(searchString));
+            }
+
+
 
             ViewBag.MostPopular = db.Posts.Include(p => p.Author).OrderByDescending(p => p.TimesVisited).Take(3);
+            ViewBag.Categories = db.CategoryPosts.ToList();
+
+
 
             return View(posts.ToList());
         }

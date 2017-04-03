@@ -1,0 +1,34 @@
+﻿@model StefanPeevBlog.Models.ApplicationUser
+
+@{
+    ViewBag.Title = "Info";
+}
+
+<h2>Info</h2>
+
+<div class="row">
+    <div class="col-md-8 jumbotron">
+        <div class="col-md-4 col-side" >
+            @{var image = Model.ImagePath != null ? Url.Content(Model.ImagePath) : Url.Content("~/ImagesUploaded/NoImage.png");}
+            <img src="@image" alt="No Image" style="height:200px; width:200px;max-height:200px; max-width:200px; background-size:cover" />
+        </div>
+        <div class="col-md-8">
+            <div class="row">
+                <h3 class="col-md-12">
+                    UserName <br /> @Model.UserName
+                </h3>
+            </div>
+            <div class="row">
+                <h3 class="col-md-12">
+                    Info <br />
+                    @Model.Info
+                </h3>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    @{var userPosts = Model.UserName.ToString() + "'s Posts"; }
+    @Html.ActionLink(userPosts, "UserPosts", "Posts", new { id = Model.UserName }, new { })
+
+</div>

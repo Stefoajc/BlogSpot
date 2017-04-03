@@ -9,6 +9,11 @@ namespace StefanPeevBlog.Models
 {
     public class Post
     {
+        public Post()
+        {
+            Comments = new HashSet<Comments>();
+        }
+
         [Key]
         public int Id { get; set; }
 
@@ -28,10 +33,17 @@ namespace StefanPeevBlog.Models
 
         public string AuthorId { get; set; }
 
-        [ForeignKey("AuthorId")]
-        public ApplicationUser Author { get; set; }
+        public int CategoryId { get; set; }
 
         public string ImagePath { get; set; }
+
+        [ForeignKey("AuthorId")]
+        public virtual ApplicationUser Author { get; set; }
+
+        [ForeignKey("CategoryId")]
+        public virtual CategoryPosts Category { get; set; }
+
+        public virtual ISet<Comments> Comments { get; set; }
 
     }
 }

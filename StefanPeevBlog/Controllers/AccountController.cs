@@ -418,7 +418,7 @@ namespace StefanPeevBlog.Controllers
         {
 
             var user = UserManager.FindById(User.Identity.GetUserId());
-            AccountSettingsViewModel ASVM = new AccountSettingsViewModel() { FullName = user.FullName, Id = user.Id, ImagePath = user.ImagePath, UserName = user.UserName };
+            AccountSettingsViewModel ASVM = new AccountSettingsViewModel() { FullName = user.FullName, Id = user.Id, ImagePath = user.ImagePath, UserName = user.UserName, Info = user.Info };
 
             return View(ASVM);
         }
@@ -427,7 +427,7 @@ namespace StefanPeevBlog.Controllers
         // POST: /Account/Settings/AccountSettingsViewModel
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult> Settings([Bind(Include = "Id,Username,FullName,ImagePath")] AccountSettingsViewModel settings)
+        public async Task<ActionResult> Settings([Bind(Include = "Id,Username,FullName,ImagePath,Info")] AccountSettingsViewModel settings)
         {
             if (!ModelState.IsValid)
             {
@@ -436,6 +436,7 @@ namespace StefanPeevBlog.Controllers
             var user = UserManager.FindById(User.Identity.GetUserId());
             user.FullName = settings.FullName;
             user.UserName = settings.UserName;
+            user.Info = settings.Info;
 
             var result = await UserManager.UpdateAsync(user);
             //var store = new UserStore<ApplicationUser>(new ApplicationDbContext());
@@ -453,6 +454,17 @@ namespace StefanPeevBlog.Controllers
             }
             AddErrors(result);
             return View(settings);
+        }
+
+        //
+        // GET: /Account/Info
+        [HttpGet]
+        [Authorize]
+        public ActionResult Info(string id) // id as username
+        {
+
+            var user = db.Users.Where(u => u.UserName == id).FirstOrDefault();
+            return View(user);
         }
 
 

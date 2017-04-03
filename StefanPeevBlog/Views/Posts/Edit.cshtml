@@ -1,4 +1,4 @@
-﻿@model StefanPeevBlog.Models.Post
+﻿@model StefanPeevBlog.Models.EditPostViewModel
 
 @{
     ViewBag.Title = "Edit";
@@ -16,8 +16,6 @@
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.Id)
         @Html.HiddenFor(model => model.AuthorId)
-        @Html.HiddenFor(model => model.Date)
-        @Html.HiddenFor(model => model.TimesVisited)
 
         <div class="form-group">
             @{var image = Model.ImagePath != null ? Url.Content(Model.ImagePath) : Url.Content("~/ImagesPostUploaded/NoImagePost.png");}
@@ -38,6 +36,13 @@
             <div class="col-md-10">
                 @Html.TextAreaFor(model => model.Body, new { @class = "form-control post-body-create col-md-12", cols = "100", rows = "10", spellcheck = "false" })
                 @Html.ValidationMessageFor(model => model.Body, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CategoryName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <label class="form-control" style="width:200px;">@Html.DisplayFor(p => p.CategoryName)</label>
             </div>
         </div>
 

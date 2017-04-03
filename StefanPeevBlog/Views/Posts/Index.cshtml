@@ -4,10 +4,14 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
+@{ var header = ViewBag.Header != null ? ViewBag.Header : "Index";}
+<h2>@header</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @if (ViewBag.DisableCreateLink == false)
+    {
+        @Html.ActionLink("Create New", "Create");
+    }
 </p>
 <table class="table row">
     <tr>
@@ -33,7 +37,9 @@
                 @Html.DisplayFor(modelItem => item.Title)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Body)
+                <p class="post-body">
+                    @Html.DisplayFor(modelItem => item.Body)
+                </p>
             </td>
             <td style="text-align:center">
                 @Html.DisplayFor(modelItem => item.TimesVisited)

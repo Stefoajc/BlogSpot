@@ -1,0 +1,18 @@
+﻿@model StefanPeevBlog.Models.Comments
+
+@using (Html.BeginForm("Create", "Comments", FormMethod.Post, new { }))
+{
+    @Html.AntiForgeryToken();
+    @Html.HiddenFor(m => m.PostId);
+    @Html.HiddenFor(m => m.AuthorId);
+    @Html.HiddenFor(m => m.CommentId);
+    <div class="well">
+        <h4>Leave a Comment:</h4>
+        <form role="form">
+            <div class="form-group">
+                @Html.TextAreaFor(m => m.Body, new { @class = "form-control", rows = "3", cols = "20" }) @*Create PostDetailsViewModel which contains field for the comment*@
+            </div>
+            <input type="submit" value="Create" class="btn btn-primary" />
+        </form>
+    </div>
+}

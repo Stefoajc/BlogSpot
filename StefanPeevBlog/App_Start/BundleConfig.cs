@@ -23,6 +23,10 @@ namespace StefanPeevBlog
             bundles.Add(new ScriptBundle("~/bundles/images").Include(
                         "~/Scripts/drag-and-dropping.js"));
 
+            bundles.Add(new ScriptBundle("~/bundles/ClickOnTagToShow").Include(
+                        "~/Scripts/ClickOnTagToShow.js",
+                        "~/Scripts/DeleteGlyphAjaxDeleteAction.js"));
+
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
                         "~/Scripts/jquery.validate.min.js",
                         "~/Scripts/jquery.validate.unobtrusive.min.js"));

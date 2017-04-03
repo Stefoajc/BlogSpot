@@ -20,6 +20,12 @@ namespace StefanPeevBlog.Models
 
         public System.Data.Entity.DbSet<StefanPeevBlog.Models.Post> Posts { get; set; }
 
+        public System.Data.Entity.DbSet<StefanPeevBlog.Models.CategoryPosts> CategoryPosts { get; set; }
+
+        public System.Data.Entity.DbSet<StefanPeevBlog.Models.Comments> Comments { get; set; }
+
+        //public System.Data.Entity.DbSet<StefanPeevBlog.Models.ApplicationUser> ApplicationUsers { get; set; }
+
         //public System.Data.Entity.DbSet<StefanPeevBlog.Models.ApplicationUser> ApplicationUsers { get; set; }
     }
 }

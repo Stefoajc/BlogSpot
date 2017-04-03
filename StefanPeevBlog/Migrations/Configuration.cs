@@ -29,13 +29,18 @@ namespace StefanPeevBlog.Migrations
                 CreateRole(context, "Administrators");
                 AddUserToRole(context, "admin@gmail.com", "Administrators");
 
+                CreateCategory(context, "Programing");
+                CreateCategory(context, "Health");
+                CreateCategory(context, "Entertainment");
+
                 CreatePost(context,
                     title: "Work Begins on HTML5.1",
                     body: @"<p>The World Wide Web Consortium (W3C) has begun work on <b>HTML5.1</b>, and this time it is handling the creation of the standard a little differently. The specification has its <b><a href=""https://w3c.github.io/html/"">own GitHub project</a></b> where anyone can see what is happening and propose changes.</p>
                     <p>The organization says the goal for the new specification is ""to <b>match reality better</b>, to make the specification as clear as possible to readers, and of course to make it possible for all stakeholders to propose improvements, and understand what makes changes to HTML successful.""</p>
                     <p>Creating HTML5 took years, but W3C hopes using GitHub will speed up the process this time around. It plans to release a candidate recommendation for HTML5.1 by <b>June</b> and a full recommendation in <b>September</b>.</p>",
                     date: new DateTime(2016, 03, 27, 17, 53, 48),
-                    authorUsername: "merry@gmail.com"
+                    authorUsername: "merry@gmail.com",
+                    categoryName: "Programing"
                 );
 
                 CreatePost(context,
@@ -43,7 +48,8 @@ namespace StefanPeevBlog.Migrations
                     body: @"<p>Microsoft has released a new <b>Windows 10 Insider Preview</b> that includes native support for <b>Bash running on Ubuntu Linux</b>. The company first announced the new feature at last week''s Build development conference, and it was one of the biggest stories of the event. The current process for installing Bash is a little complication, but Microsoft has a blog post that explains how the process works.</p>
                     <p>The preview build also includes <b>Cortana</b> upgrades, extensions support, the new <b>Skype</b> Universal Windows Platform app and some interface improvements.</p>",
                     date: new DateTime(2016, 05, 11, 08, 22, 03),
-                    authorUsername: "merry@gmail.com"
+                    authorUsername: "merry@gmail.com",
+                    categoryName: "Programing"
                 );
 
                 CreatePost(context,
@@ -52,7 +58,8 @@ namespace StefanPeevBlog.Migrations
                     <p>Other new features include improved tab switching, tree view and crash recovery. GitHub noted, ""Crashes are nobody''s idea of fun, but in case Atom does crash on you, it periodically saves your editor state. After relaunching Atom after a crash, you should find all your work saved and ready to go.""</p>
                     <p>GitHub has also released a beta preview of Atom 1.8.</p>",
                     date: new DateTime(2016, 03, 27, 17, 53, 48),
-                    authorUsername: "merry@gmail.com"
+                    authorUsername: "merry@gmail.com",
+                    categoryName: "Programing"
                 );
 
                 CreatePost(context,
@@ -66,7 +73,8 @@ namespace StefanPeevBlog.Migrations
                       <li>Java Web Developer</li>
                     </ul>",
                     date: new DateTime(2016, 02, 18, 22, 14, 38),
-                    authorUsername: "pesho@gmail.com"
+                    authorUsername: "pesho@gmail.com",
+                    categoryName: "Entertainment"
                 );
 
                 CreatePost(context,
@@ -82,7 +90,8 @@ namespace StefanPeevBlog.Migrations
                     <p>Other features include the ability to turn off Git’s clean and smudge filters; the ability to see where a particular setting came from; the ability to easily diagnose end-of-line problems; the ability to see a remote repository’s default branch; and support for cloning via the rsync protocol has been dropped.</p>
                     <p>The full release notes are available <a href=""https://github.com/git/git/blob/v2.8.0/Documentation/RelNotes/2.8.0.txt"">here</a>.</p>",
                     date: new DateTime(2016, 04, 11, 19, 02, 05),
-                    authorUsername: "geshu@gmail.com"
+                    authorUsername: "geshu@gmail.com",
+                    categoryName: "Health"
                 );
 
                 CreatePost(context,
@@ -93,7 +102,8 @@ namespace StefanPeevBlog.Migrations
                     <p>Another key update to the solution is a new middleware runtime. Expressive is designed to focus on simplicity and interoperability, and it enables developers to customize their solutions.</p>
                     <p>“I’m extremely proud of the work we’ve done with Expressive,” said Matthew Weier O’Phinney, principal engineer and Zend Framework project lead at Rogue Wave. “Expressive signals the future of PHP applications, composed of layered, single-purpose PSR-7 middleware.”</p>",
                     date: new DateTime(2016, 06, 30, 17, 36, 52),
-                    authorUsername: "merry@gmail.com"
+                    authorUsername: "merry@gmail.com",
+                    categoryName: "Health"
                 );
 
                 context.SaveChanges();
@@ -152,14 +162,22 @@ namespace StefanPeevBlog.Migrations
         }
 
         private void CreatePost(ApplicationDbContext context,
-            string title, string body, DateTime date, string authorUsername)
+            string title, string body, DateTime date, string authorUsername, string categoryName)
         {
             var post = new Post();
             post.Title = title;
             post.Body = body;
             post.Date = date;
             post.Author = context.Users.Where(u => u.UserName == authorUsername).FirstOrDefault();
+            post.Category = context.CategoryPosts.Where(c => c.CategoryName == categoryName).FirstOrDefault();
             context.Posts.Add(post);
+        }
+
+        private void CreateCategory(ApplicationDbContext context, string categoryName)
+        {
+            var category = new CategoryPosts();
+            category.CategoryName = categoryName;
+            context.CategoryPosts.Add(category);
         }
     }
 }

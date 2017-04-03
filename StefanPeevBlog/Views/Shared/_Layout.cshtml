@@ -27,6 +27,7 @@
                     <li>@Html.ActionLink("Posts", "Index", "Posts")</li>
                     <li>@Html.ActionLink("MyPosts", "MyPosts", "Posts")</li>
                     <li>@Html.ActionLink("New Post", "Create", "Posts")</li>
+                    <li>@Html.ActionLink("Categories","Index","CategoryPosts")</li>
                     }
                 </ul>
                 @Html.Partial("_LoginPartial")
@@ -44,6 +45,7 @@
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/bundles/ClickOnTagToShow")
     @*@Scripts.Render("~/bundles/IndexPageScripts")*@
     @RenderSection("scripts", required: false)
 </body>

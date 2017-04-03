@@ -136,6 +136,8 @@ namespace StefanPeevBlog.Models
 
         public string ImagePath { get; set; }
 
+        public string Info { get; set; }
+
     }
 
     public class FileViewModel

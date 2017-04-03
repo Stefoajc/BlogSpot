@@ -1,0 +1,40 @@
+﻿@model StefanPeevBlog.Models.CommentsTreeViewModel
+
+@using Microsoft.AspNet.Identity
+
+@if (Model.CommentsTree != null)
+{
+    var filter = (Model.CurrentComment == null ? (int?)null : Model.CurrentComment.Id);
+    foreach (var comment in Model.CommentsTree.Where(c => c.CommentId == filter))
+    {
+        Model.CurrentComment = comment;
+        <div class="media media@(Model.CurrentComment.Id)">
+            @{ var userLink = "../Account/Info/" + @Model.CurrentComment.Author.UserName;}
+            <a class="pull-left" href=@Url.Action(userLink)>
+                <img class="media-object" style="width:64px;height:64px;" src=@Url.Content(Model.CurrentComment.Author.ImagePath) alt="">
+            </a>
+            <div class="media-body">
+                <h4 class="media-heading">
+                    @Model.CurrentComment.Author.UserName
+                    <small>@Model.CurrentComment.PostedOn</small>
+                    <span id="@Model.CurrentComment.Id" style="cursor:pointer;" class="glyphicon glyphicon-plus"></span>
+                    @if (User.IsInRole("Administrators") || User.Identity.GetUserId() == comment.AuthorId)
+                    {
+                        <span id="@(Model.CurrentComment.Id)" style="cursor:pointer;" class="glyphicon glyphicon-edit"></span>
+                        <span id="@(Model.CurrentComment.Id)" style="cursor:pointer;" class="glyphicon glyphicon-remove"></span>
+                    }
+
+                </h4>
+                @Model.CurrentComment.Body
+                @{ var clas = "commentinput" + Model.CurrentComment.Id;}
+                <section style="display:none" class="commentinput @clas">
+                    @Html.Partial("~/Views/Comments/CreatePartial.cshtml", new StefanPeevBlog.Models.Comments() { AuthorId = User.Identity.GetUserId(), PostId = Model.CurrentComment.PostId, CommentId = Model.CurrentComment.Id })
+                </section>
+                <section style="display:none" class="commenteditinput commenteditinput@(Model.CurrentComment.Id)">
+                    @Html.Partial("~/Views/Comments/EditPartial.cshtml", Model.CurrentComment)
+                </section>
+                @Html.Partial("Comments", Model)
+            </div>
+        </div>
+                        }
+                    }

@@ -1,0 +1,41 @@
+﻿@model IEnumerable<StefanPeevBlog.Models.CategoryPosts>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+@if (User.IsInRole("Administrators"))
+{
+    <p>
+        @Html.ActionLink("Create New", "Create")
+    </p>
+}
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.CategoryName)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.ActionLink((item.CategoryName) + " (" + item.Posts.Count + ")"
+                                , "CategoryAllPosts", "Posts", new { id = item.CategoryId }, new { })
+
+            </td>
+            @if (User.IsInRole("Administrators"))
+            {
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.CategoryId }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.CategoryId }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.CategoryId })
+                </td>
+            }
+        </tr>
+    }
+
+</table>
