@@ -1,0 +1,142 @@
+﻿@model StefanPeevBlog.Models.Events
+
+
+<style>
+    #map {
+        height: 400px;
+        width: 50%;
+    }
+</style>
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div class="col-md-6">
+    <h4>Events</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.EventCreator.FullName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EventCreator.FullName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ImagePath)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ImagePath)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.EventTitle)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EventTitle)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.EventBody)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EventBody)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Lat)
+        </dt>
+
+        <dd id="lat">
+            @Html.DisplayFor(model => model.Lat)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Lng)
+        </dt>
+
+        <dd id="lng">
+            @Html.DisplayFor(model => model.Lng)
+        </dd>
+
+    </dl>
+</div>
+   
+<div id="map" class="col-md-6"></div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.EventId }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
+
+
+@section scripts{
+    <section class="scripts">
+        <script type="text/javascript">
+            startMapInit();
+            function startMapInit() {
+                var map;
+                var infowindoww;
+                var marker;
+                var lat = @Html.Raw(Json.Encode(Model.Lat));
+                var lng = @Html.Raw(Json.Encode(Model.Lng));
+
+                $(document).ready(function () {
+                    Initialize();
+                    var bikeLayer = new google.maps.BicyclingLayer();
+                    bikeLayer.setMap(map);
+                });
+
+                function Initialize() {
+                    // Google has tweaked their interface somewhat - this tells the api to use that new UI
+                    google.maps.visualRefresh = true;
+                    var curspot = new google.maps.LatLng(lat, lng);
+
+                    // These are options that set initial zoom level, where the map is centered globally to start, and the type of map to show
+                    var mapOptions = {
+                        zoom: 15,
+                        center: curspot,
+                        mapTypeId: google.maps.MapTypeId.ROADMAP,
+                        mapTypeControl: true,
+                        mapTypeControlOptions:
+                        {
+                            style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
+                            poistion: google.maps.ControlPosition.TOP_RIGHT,
+                            mapTypeIds: [google.maps.MapTypeId.ROADMAP,
+                              google.maps.MapTypeId.TERRAIN,
+                              google.maps.MapTypeId.HYBRID,
+                              google.maps.MapTypeId.SATELLITE]
+                        },
+                        navigationControl: true,
+                        navigationControlOptions:
+                        {
+                            style: google.maps.NavigationControlStyle.ZOOM_PAN
+                        },
+                        scaleControl: true,
+                        disableDoubleClickZoom: false,
+                        draggable: true,
+                        streetViewControl: true
+                    };
+
+                    // This makes the div with id "map_canvas" a google map
+                    map = new google.maps.Map(document.getElementById("map"), mapOptions);
+
+                    //put a marker on the map
+                    var marker = new google.maps.Marker({
+                        'position': new google.maps.LatLng(lat, lng),
+                        'map': map
+                    });
+
+                    // Make the marker-pin blue!
+                    marker.setIcon('http://maps.google.com/mapfiles/ms/icons/blue-dot.png')
+
+                };
+            };
+        </script>
+    </section>
+}

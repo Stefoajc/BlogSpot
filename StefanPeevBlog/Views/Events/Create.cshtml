@@ -1,0 +1,181 @@
+﻿@model StefanPeevBlog.Models.Events
+
+<style>
+    #map {
+        height: 400px;
+        width: 50%;
+    }
+</style>
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>Create</h2>
+<hr />
+<div class="col-lg-6">
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.ImagePath, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.ImagePath, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.ImagePath, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Starts, htmlAttributes: new { @class = "control-label  col-md-2" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(model => model.Starts, new { @class = "datetimepicker form-control" })
+                    @Html.ValidationMessageFor(model => model.Starts, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Ends, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(model => model.Ends, new { @class = "datetimepicker form-control" })
+                    @Html.ValidationMessageFor(model => model.Ends, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.EventTitle, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.EventTitle, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.EventTitle, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.EventBody, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.EventBody, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.EventBody, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.Lat, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Lat, new { htmlAttributes = new { @class = "form-control" , id ="lat", @readonly = true } })
+                    @Html.ValidationMessageFor(model => model.Lat, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.Lng, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Lng, new { htmlAttributes = new { @class = "form-control", id = "lng", @readonly = true } })
+                    @Html.ValidationMessageFor(model => model.Lng, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Create" class="btn btn-default" />
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<div class="col-lg-5" id="map">
+</div>
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+
+@section scripts{
+<section class="scripts">
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.datetimepicker').datetimepicker({ format: "DD/MM/YYYY HH:mm" });
+        });
+    </script>
+    <script type="text/javascript">
+            startMapInit();
+            function startMapInit() {
+                var map;
+                var infowindoww;
+                var marker;
+
+                $(document).ready(function () {
+                    Initialize();
+                    var bikeLayer = new google.maps.BicyclingLayer();
+                    bikeLayer.setMap(map);
+                });
+
+                function Initialize() {
+                    // Google has tweaked their interface somewhat - this tells the api to use that new UI
+                    google.maps.visualRefresh = true;
+                    var Plovdiv = new google.maps.LatLng(42.15, 24.75);
+
+                    // These are options that set initial zoom level, where the map is centered globally to start, and the type of map to show
+                    var mapOptions = {
+                        zoom: 10,
+                        center: Plovdiv,
+                        mapTypeId: google.maps.MapTypeId.ROADMAP,
+                        mapTypeControl: true,
+                        mapTypeControlOptions:
+                        {
+                            style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
+                            poistion: google.maps.ControlPosition.TOP_RIGHT,
+                            mapTypeIds: [google.maps.MapTypeId.ROADMAP,
+                              google.maps.MapTypeId.TERRAIN,
+                              google.maps.MapTypeId.HYBRID,
+                              google.maps.MapTypeId.SATELLITE]
+                        },
+                        navigationControl: true,
+                        navigationControlOptions:
+                        {
+                            style: google.maps.NavigationControlStyle.ZOOM_PAN
+                        },
+                        scaleControl: true,
+                        disableDoubleClickZoom: false,
+                        draggable: true,
+                        streetViewControl: true
+                    };
+
+                    // This makes the div with id "map_canvas" a google map
+                    map = new google.maps.Map(document.getElementById("map"), mapOptions);
+
+                    //The code below creates a new info window object that retrieves the form element on clicking a marker.
+                    infowindoww = new google.maps.InfoWindow({
+                        content: document.getElementById('form')
+                    });
+
+
+                    //place only one marker on the map where is last clicked position
+                    function placeMarker(location) {
+                        if ( marker ) {
+                            marker.setPosition(location);
+                        } else {
+                            marker = new google.maps.Marker({
+                                position: location,
+                                map: map
+                            });
+                        }
+                        //Get lat and lng of the marker
+                        document.getElementById("lat").value= location.lat();
+                        document.getElementById("lng").value = location.lng();
+                    }
+
+                    //// create marker when the user clicks on the map
+                    google.maps.event.addListener(map, 'click', function (event) {
+                        placeMarker(event.latLng);
+                    });
+                };
+            };
+    </script>
+</section>
+}
+
+@section styles{
+    @Styles.Render("~/Content/datepicker")
+    }

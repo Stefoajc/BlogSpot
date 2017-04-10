@@ -1,0 +1,33 @@
+﻿@model List<StefanPeevBlog.Models.AccountSettingsViewModel>
+
+@{
+    ViewBag.Title = "GetUsersList";
+}
+
+<h2>All Users</h2>
+
+
+@foreach (var user in Model)
+{
+    <div class="row">
+        <div class="col-md-8 jumbotron">
+            <div class="col-md-4 col-side">
+                @{var image = user.ImagePath != null ? Url.Content(user.ImagePath) : Url.Content("~/ImagesUploaded/NoImage.png");}
+                <img src="@image" alt="No Image" style="height:200px; width:200px;max-height:200px; max-width:200px; background-size:cover" />
+            </div>
+            <div class="col-md-8">
+                <div class="row">
+                    <h3 class="col-md-12">
+                        @user.UserName (@user.FullName)
+                    </h3>
+                </div>
+                <div class="row">
+                    <h3 class="col-md-12">
+                        Info <br />
+                        @user.Info
+                    </h3>
+                </div>
+            </div>
+        </div>
+    </div>
+}

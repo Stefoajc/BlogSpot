@@ -8,27 +8,46 @@
 
 <div class="row">
     <div class="col-md-8 jumbotron">
-        <div class="col-md-4 col-side" >
+        <div class="col-md-4 col-side userimage" >
             @{var image = Model.ImagePath != null ? Url.Content(Model.ImagePath) : Url.Content("~/ImagesUploaded/NoImage.png");}
             <img src="@image" alt="No Image" style="height:200px; width:200px;max-height:200px; max-width:200px; background-size:cover" />
         </div>
         <div class="col-md-8">
             <div class="row">
-                <h3 class="col-md-12">
-                    UserName <br /> @Model.UserName
+                <h3 class="col-md-12 username">
+                    @Model.UserName
                 </h3>
             </div>
-            <div class="row">
+            <div class="row userinfo">
                 <h3 class="col-md-12">
-                    Info <br />
                     @Model.Info
+                    
                 </h3>
             </div>
         </div>
     </div>
 </div>
 <div class="row">
-    @{var userPosts = Model.UserName.ToString() + "'s Posts"; }
-    @Html.ActionLink(userPosts, "UserPosts", "Posts", new { id = Model.UserName }, new { })
+    
+    @{var userPosts = Model.UserName.ToString() + "'s Posts" + "(" + Model.MyPosts.Count + ")"; }
+    @Html.ActionLink(userPosts, "UserPosts", "Posts", new { username = Model.UserName }, new { @class = "btn btn-primary" })
 
-</div>
+    @if (ViewBag.IsFollowed == null)
+    {
+        <a id="button" title="button">Like</a>
+    }
+    else
+    {
+        <a id="button" class="down" title="button">Like</a>
+    }
+    <span>@Model.Followers.Count Likes</span>
+    @*<span>Followed by: @Model.Followers.Count users</span>*@
+</div> 
+
+@section Styles {
+    @Styles.Render("~/Content/ToggleButtonStyleSheet.css")
+}
+
+@section Scripts {
+    @Scripts.Render("~/Scripts/ToggleButtonJS.js")
+    }

@@ -4,12 +4,21 @@ using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
 
 namespace StefanPeevBlog.Models
 {
     // You can add profile data for the user by adding more properties to your ApplicationUser class, please visit http://go.microsoft.com/fwlink/?LinkID=317594 to learn more.
     public class ApplicationUser : IdentityUser
     {
+        public ApplicationUser()
+        {
+            MyComments = new HashSet<Comments>();
+            MyPosts = new HashSet<Post>();
+            Followers = new HashSet<ApplicationUser>();
+            MyEvents = new HashSet<Events>();
+        }
+
         [StringLength(100)]
         [RegularExpression(@"^[a-zA-Zа-яА-Я' ']{1,30}$",ErrorMessage = "Your Full Name should contain only letters and spaces.")]
         public string FullName { get; set; }
@@ -25,5 +34,13 @@ namespace StefanPeevBlog.Models
             // Add custom user claims here
             return userIdentity;
         }
+
+        public virtual ISet<Comments> MyComments { get; set; }
+
+        public virtual ISet<Post> MyPosts { get; set; }
+
+        public virtual ISet<ApplicationUser> Followers { get; set; }
+
+        public virtual ISet<Events> MyEvents { get; set; }
     }
 }

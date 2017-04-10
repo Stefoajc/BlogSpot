@@ -37,6 +37,8 @@ namespace StefanPeevBlog.Models
 
         public string ImagePath { get; set; }
 
+        public bool? IsSpecial { get; set; }
+
         [ForeignKey("AuthorId")]
         public virtual ApplicationUser Author { get; set; }
 

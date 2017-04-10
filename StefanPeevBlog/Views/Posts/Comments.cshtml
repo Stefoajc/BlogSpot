@@ -11,7 +11,8 @@
         <div class="media media@(Model.CurrentComment.Id)">
             @{ var userLink = "../Account/Info/" + @Model.CurrentComment.Author.UserName;}
             <a class="pull-left" href=@Url.Action(userLink)>
-                <img class="media-object" style="width:64px;height:64px;" src=@Url.Content(Model.CurrentComment.Author.ImagePath) alt="">
+                @{var img = Model.CurrentComment.Author.ImagePath == null ? "~/ImagesUploaded/NoImage.png" : Model.CurrentComment.Author.ImagePath;}
+                <img class="media-object" style="width:64px;height:64px;" src=@Url.Content(img) alt="">
             </a>
             <div class="media-body">
                 <h4 class="media-heading">

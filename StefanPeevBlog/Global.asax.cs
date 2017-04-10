@@ -7,6 +7,7 @@ using System.Web.Optimization;
 using System.Web.Routing;
 using System.Data.Entity;
 using StefanPeevBlog.Models;
+using StefanPeevBlog.Common;
 
 namespace StefanPeevBlog
 {
@@ -19,6 +20,12 @@ namespace StefanPeevBlog
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+            System.Web.Mvc.ModelBinders.Binders[typeof(float)] = new SingleModelBinder();
+            System.Web.Mvc.ModelBinders.Binders[typeof(double)] = new DoubleModelBinder();
+            System.Web.Mvc.ModelBinders.Binders[typeof(decimal)] = new DecimalModelBinder();
+            System.Web.Mvc.ModelBinders.Binders[typeof(float?)] = new SingleModelBinder();
+            System.Web.Mvc.ModelBinders.Binders[typeof(double?)] = new DoubleModelBinder();
+            System.Web.Mvc.ModelBinders.Binders[typeof(decimal?)] = new DecimalModelBinder();
         }
     }
 }

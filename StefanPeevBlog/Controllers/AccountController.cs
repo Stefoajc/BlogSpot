@@ -460,11 +460,41 @@ namespace StefanPeevBlog.Controllers
         // GET: /Account/Info
         [HttpGet]
         [Authorize]
-        public ActionResult Info(string id) // id as username
+        [Route("Account/Info/{username}")]
+        public ActionResult Info(string username)
         {
 
-            var user = db.Users.Where(u => u.UserName == id).FirstOrDefault();
+            var user = db.Users.Where(u => u.UserName == username).FirstOrDefault();
+            var follower = user.Followers.Where(u => u.UserName == User.Identity.GetUserName()).FirstOrDefault();
+            if (follower != null)
+            {
+                ViewBag.IsFollowed = true;
+            }
             return View(user);
+        }
+
+        //
+        // POST: /Account/Follow
+        [HttpPost]
+        [Authorize]
+        [Route("Account/Follow/{username}")]
+        public void Follow(string username)
+        {
+            var followedUser = db.Users.Where(u => u.UserName == username.Trim()).First();
+            followedUser.Followers.Add(db.Users.Find(User.Identity.GetUserId()));
+            db.SaveChanges();
+        }
+
+        //
+        // POST: /Account/UnFollow
+        [HttpPost]
+        [Authorize]
+        [Route("Account/UnFollow/{username}")]
+        public void UnFollow(string username)
+        {
+            var followedUser = db.Users.Where(u => u.UserName == username.Trim()).First();
+            followedUser.Followers.Remove(db.Users.Find(User.Identity.GetUserId()));
+            db.SaveChanges();
         }
 
 
@@ -482,11 +512,15 @@ namespace StefanPeevBlog.Controllers
             return Json(!db.Users.Any(u => u.Email == Email));
         }
 
+        //
+        // GET Account/UploadImage
         public ActionResult UploadImage()
         {
             return View();
         }
 
+        //
+        // POST Account/UploadImage/image
         [HttpPost]
         public async Task<ActionResult> UploadImage(FileViewModel model)
         {
@@ -496,7 +530,11 @@ namespace StefanPeevBlog.Controllers
             }
 
             // The uploaded image corresponds to our business rules => process it
+            //-----------------------CreateDirectoryForEveryUser and upload his picture there------------------
 
+
+
+            //-------------------------------------------------------------------------------------------------
             var fileName = Path.GetFileName(model.File.FileName);
             var path = Path.Combine(Server.MapPath("~/ImagesUploaded"), fileName);
             model.File.SaveAs(path);
@@ -519,6 +557,8 @@ namespace StefanPeevBlog.Controllers
             return View("Settings");
         }
 
+        //
+        // GET Account/GetUserInfoPopUp/id
         public ActionResult GetUserInfoPopUp(string id)
         {
             return View(db.Users.Where(u => u.Id == id)
@@ -526,11 +566,16 @@ namespace StefanPeevBlog.Controllers
                 .FirstOrDefault());
         }
 
-        //[OutputCache(NoStore = true, Duration = 0, VaryByParam = "*")]
-        //public ActionResult ViewSavedImage()
-        //{
-        //    return PartialView("ViewSavedImage", imageModel);
-        //}
+        //
+        // GET Account/GetUsersList
+        [Authorize(Roles ="Administrators")]
+        public ActionResult GetUsersList()
+        {
+            var usersList = db.Users
+                .Select(u => new AccountSettingsViewModel() { FullName = u.FullName, ImagePath = u.ImagePath, Info = u.Info, UserName = u.UserName, Id = u.Id })
+                .ToList();
+            return View(usersList);
+        }
 
         protected override void Dispose(bool disposing)
         {

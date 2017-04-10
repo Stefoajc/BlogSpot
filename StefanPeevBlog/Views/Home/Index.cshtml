@@ -56,7 +56,7 @@
                         <hr>
                     }
                     <p class="post-body">@post.Body</p>
-                    <p>@Html.ActionLink(post.Comments.Count + " Comments", "Details","Posts", new { id = post.Id }, new { })</p>
+                    <p>@Html.ActionLink(post.Comments.Count + " Comments", "Details", "Posts", new { id = post.Id }, new { })</p>
                     <a class="btn btn-primary" href=@Url.Action("../Posts/Details/" + post.Id)>Read More <span class="glyphicon glyphicon-chevron-right"></span></a>
                     <hr>
                     }
@@ -125,7 +125,7 @@
             <div class="well">
                 <h4>Blog Search</h4>
                 <div class="input-group">
-                    @Html.TextBox("SearchString","Search in title and body", new { @class = "form-control" })
+                    @Html.TextBox("SearchString", "Search in title and body", new { @class = "form-control" })
                     <span class="input-group-btn">
                         <button class="btn btn-default" type="submit" value="Search">
                             <span class="glyphicon glyphicon-search"></span>
@@ -139,23 +139,27 @@
         <div class="well">
             <h4>Blog Categories</h4>
             <div class="row">
-                <div class="col-lg-12">
-                    <ul class="list-unstyled">
-                        @foreach (var category in ViewBag.Categories)
-                        {
-                            <li>
-                                @Html.ActionLink(((string)category.CategoryName), "CategoryAllPosts", "Posts", new { id = category.CategoryId }, new { })
-                            </li>
-                        }
-                    </ul>
-                </div>
+                <ul class="list-unstyled list-categories">
+                    @foreach (var category in ViewBag.Categories)
+                    {
+                        <li>
+                            @Html.ActionLink(((string)category.CategoryName), "CategoryAllPosts", "Posts", new { id = category.CategoryId }, new { })
+                        </li>
+                    }
+                </ul>
                 <!-- /.row -->
             </div>
         </div>
         <!-- Side Widget Well -->
         <div class="well">
-            <h4>Side Widget Events</h4>
-            <p>Panel for special events which everybody sees posted by the admin</p>
+            <h4>Special Events</h4>
+            <div class="events">
+                @foreach (var Event in ViewBag.Events)
+                {
+                    @Html.ActionLink((string)Event.EventTitle, "Details", "Events", new { id = Event.EventId }, new { })
+                    <br />
+                }
+            </div>
         </div>
     </div>
 
@@ -174,3 +178,7 @@
     </div>
     <!-- /.row -->
 </footer>
+
+@section styles{
+    @Styles.Render("~/Content/HomeIndexPage.css")
+}

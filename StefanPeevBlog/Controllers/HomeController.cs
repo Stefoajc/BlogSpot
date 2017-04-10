@@ -21,8 +21,8 @@ namespace StefanPeevBlog.Controllers
 
 
             ViewBag.MostPopular = db.Posts.Include(p => p.Author).OrderByDescending(p => p.TimesVisited).Take(3);
-            ViewBag.Categories = db.CategoryPosts.ToList();
-
+            ViewBag.Categories = db.CategoryPosts.Select(cP => new CategoryPostNameAndIdOnly{ CategoryId = cP.CategoryId, CategoryName = cP.CategoryName }).ToList();
+            ViewBag.Events = db.Events.Select(e => new EventsHomeViewModel{EventId = e.EventId, EventTitle = e.EventTitle }).ToList();
 
 
             return View(posts.ToList());

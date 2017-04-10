@@ -18,37 +18,61 @@ namespace StefanPeevBlog.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
-        // GET: Posts
-        public ActionResult Index()
+        // GET: Posts/{filter}
+        public ActionResult Index(string filter)
         {
             ViewBag.DisableCreatelink = false;
-            return View(db.Posts.Include(p => p.Author)
-                .Select(p => new PostIndexViewModel
-                {
-                    Id = p.Id,
-                    Body = p.Body,
-                    Date = p.Date,
-                    Title = p.Title,
-                    UserName = p.Author.UserName,
-                    TimesVisited = p.TimesVisited
-                })
-                .ToList());
+            var posts = db.Posts.Include(p => p.Author);
+            switch (filter)
+            {
+                case "latest":
+                    ViewBag.Header = "Latest Posts";
+                    posts = posts.OrderByDescending(p => p.Date);
+                    break;
+                case "mostPopular":
+                    ViewBag.Header = "Most Popular Posts";
+                    posts = posts.OrderByDescending(p => p.TimesVisited);
+                    break;
+                case "mostCommented":
+                    ViewBag.Header = "Most Commented Posts";
+                    posts = posts.OrderByDescending(p => p.Comments.Count);
+                    break;
+                case "myPosts":
+                    ViewBag.Header = "My Posts";
+                    posts = posts.Where(p => p.AuthorId == User.Identity.GetUserId());
+                    break;
+                default:
+                    ViewBag.Title = "All Posts";
+                    break;
+            }
+            return View(posts
+                         .Select(p => new PostIndexViewModel
+                         {
+                             Id = p.Id,
+                             Body = p.Body,
+                             Date = p.Date,
+                             Title = p.Title,
+                             UserName = p.Author.UserName,
+                             TimesVisited = p.TimesVisited
+                         })
+                        .ToList());
         }
 
         // GET: Posts/UserPosts/5
-        public ActionResult UserPosts(string id) // id used as UserName
+        [Route("Posts/UserPosts/{username}")]
+        public ActionResult UserPosts(string username) // id used as UserName
         {
-            ViewBag.Header = id + "'s Posts";
+            ViewBag.Header = username + "'s Posts";
             ViewBag.DisableCreatelink = true;
-            if (db.Posts.Where(p => p.Author.UserName == id).Count() != 0)
+            if (db.Posts.Where(p => p.Author.UserName == username).Count() != 0)
             {
-                ViewBag.TotalViews = db.Posts.Where(p => p.Author.UserName == id).Select(p => p.TimesVisited).Sum();
+                ViewBag.TotalViews = db.Posts.Where(p => p.Author.UserName == username).Select(p => p.TimesVisited).Sum();
             }
             else
             {
                 ViewBag.TotalViews = 0;
             }
-            return View("Index", db.Posts.Include(p => p.Author).Where(p => p.Author.UserName == id)
+            return View("Index", db.Posts.Include(p => p.Author).Where(p => p.Author.UserName == username)
                                                                 .Select(p => new PostIndexViewModel
                                                                 {
                                                                     Id = p.Id,
@@ -90,7 +114,7 @@ namespace StefanPeevBlog.Controllers
         }
 
         // GET: Posts/Details/5
-        public ActionResult Details(int id)
+        public ActionResult Details(int? id)
         {
             if (id == null)
             {
@@ -112,7 +136,7 @@ namespace StefanPeevBlog.Controllers
         {
             CreatePostViewModel cpostVM = new CreatePostViewModel();
             cpostVM.Categories = new SelectList(db.CategoryPosts.ToList()
-                .Select(c => new SelectListItem { Value = c.CategoryId.ToString() , Text = c.CategoryName }),"Value","Text");   
+                .Select(c => new SelectListItem { Value = c.CategoryId.ToString(), Text = c.CategoryName }), "Value", "Text");
             return View(cpostVM);
         }
 
@@ -212,7 +236,7 @@ namespace StefanPeevBlog.Controllers
                 return View("Unauthorized");
             }
             EditPostViewModel ePost = new EditPostViewModel()
-                                          { AuthorId = post.AuthorId, Id = post.Id ,Body = post.Body, CategoryName = post.Category.CategoryName, ImagePath = post.ImagePath, Title = post.Title };
+            { AuthorId = post.AuthorId, Id = post.Id, Body = post.Body, CategoryName = post.Category.CategoryName, ImagePath = post.ImagePath, Title = post.Title };
             return View(ePost);
         }
 
@@ -277,11 +301,11 @@ namespace StefanPeevBlog.Controllers
 
         public ActionResult CategoryAllPosts(int id) // as categoryid
         {
-            var posts = db.Posts.Include(p =>p.Author).Where(p => p.CategoryId == id).ToList();
+            var posts = db.Posts.Include(p => p.Author).Where(p => p.CategoryId == id).ToList();
             ViewBag.MostPopular = posts.OrderBy(p => p.TimesVisited);
             ViewBag.Categories = db.CategoryPosts.ToList();
 
-            return View("~/Views/Home/Index.cshtml",posts);
+            return View("~/Views/Home/Index.cshtml", posts);
         }
 
         protected override void Dispose(bool disposing)
